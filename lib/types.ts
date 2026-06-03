@@ -17,3 +17,12 @@ export type PostWithUser = {
     email: string;
   } | null;
 };
+
+export type GameDeal = {
+  dealID: string;
+  title: string;
+  salePrice: string;
+  normalPrice: string;
+  savings: string;
+  steamRatingPercent: string;
+};

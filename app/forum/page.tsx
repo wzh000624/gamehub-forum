@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
+import { getLiveGameDeals } from "@/lib/game-deals";
 import { createServerClient } from "@/lib/supabase/server";
 import type { PostWithUser } from "@/lib/types";
 import { ForumShell } from "./forum-shell";
@@ -16,7 +17,7 @@ export default async function ForumPage() {
     redirect("/login");
   }
 
-  const [{ data: profile }, { data: posts }] = await Promise.all([
+  const [{ data: profile }, { data: posts }, gameDeals] = await Promise.all([
     supabase
       .from("users")
       .select("id, username, email, created_at")
@@ -25,7 +26,8 @@ export default async function ForumPage() {
     supabase
       .from("posts")
       .select("id, user_id, title, content, created_at, likes_count, users(username, email)")
-      .order("created_at", { ascending: false })
+      .order("created_at", { ascending: false }),
+    getLiveGameDeals()
   ]);
 
   const normalizedPosts = ((posts ?? []) as Array<
@@ -56,6 +58,7 @@ export default async function ForumPage() {
         </nav>
         <ForumShell
           currentUserId={session.user.id}
+          gameDeals={gameDeals}
           posts={normalizedPosts}
           username={profile?.username ?? "Player"}
         />

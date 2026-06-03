@@ -2,21 +2,22 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, MessageSquarePlus, Send, ThumbsUp } from "lucide-react";
+import { ExternalLink, Flame, LogOut, MessageSquarePlus, Send, ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { createBrowserClient } from "@/lib/supabase/client";
-import type { PostWithUser } from "@/lib/types";
+import type { GameDeal, PostWithUser } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
 type ForumShellProps = {
   currentUserId: string;
+  gameDeals: GameDeal[];
   posts: PostWithUser[];
   username: string;
 };
 
-export function ForumShell({ currentUserId, posts, username }: ForumShellProps) {
+export function ForumShell({ currentUserId, gameDeals, posts, username }: ForumShellProps) {
   const router = useRouter();
   const supabase = createBrowserClient();
   const [title, setTitle] = useState("");
@@ -93,6 +94,54 @@ export function ForumShell({ currentUserId, posts, username }: ForumShellProps) 
               <p className="text-2xl font-black text-white">{stats.players}</p>
               <p className="mt-1 text-xs text-slate-400">Players</p>
             </div>
+          </div>
+        </section>
+
+        <section className="glass rounded-2xl p-5">
+          <div className="flex items-center gap-2">
+            <Flame className="h-5 w-5 text-cyan-300" />
+            <h2 className="text-lg font-bold text-white">Live Game Deals</h2>
+          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-400">
+            Real-time Steam deal data from the CheapShark public API.
+          </p>
+
+          <div className="mt-4 space-y-3">
+            {gameDeals.length === 0 && (
+              <p className="rounded-xl border border-slate-700/70 bg-slate-950/40 px-4 py-3 text-sm text-slate-400">
+                Deals are temporarily unavailable.
+              </p>
+            )}
+
+            {gameDeals.map((deal) => {
+              const savings = Math.round(Number(deal.savings) || 0);
+
+              return (
+                <a
+                  className="block rounded-xl border border-slate-700/70 bg-slate-950/40 p-4 transition hover:border-cyan-300/50 hover:bg-slate-900/70"
+                  href={`https://www.cheapshark.com/redirect?dealID=${deal.dealID}`}
+                  key={deal.dealID}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="line-clamp-2 text-sm font-semibold leading-5 text-white">
+                      {deal.title}
+                    </h3>
+                    <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+                    <span className="rounded-full bg-cyan-300/12 px-2.5 py-1 font-semibold text-cyan-100">
+                      ${deal.salePrice}
+                    </span>
+                    <span className="text-slate-500 line-through">${deal.normalPrice}</span>
+                    <span className="rounded-full bg-indigo-400/12 px-2.5 py-1 font-semibold text-indigo-100">
+                      {savings}% off
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
           </div>
         </section>
 

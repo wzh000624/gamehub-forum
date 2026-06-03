@@ -7,6 +7,7 @@ This is a Next.js MVP project based on the PRD. It includes registration, login,
 - Next.js App Router
 - Supabase Auth
 - Supabase PostgreSQL
+- CheapShark public API
 - Tailwind CSS
 - lucide-react icons
 
@@ -81,6 +82,17 @@ Open `http://localhost:3000` in your browser.
 - Post list sorted by newest first
 - Reserved likes field
 - User sign out
+- Live game deal cards powered by the CheapShark public API
+
+## External API Integration
+
+The forum page includes a `Live Game Deals` panel. It fetches current Steam game deal data from the CheapShark public API:
+
+```text
+https://www.cheapshark.com/api/1.0/deals
+```
+
+Deal cards link through CheapShark redirect URLs, matching CheapShark usage guidance for deal traffic.
 
 ## Future V2 Ideas
 
