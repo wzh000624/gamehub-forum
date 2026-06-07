@@ -64,6 +64,8 @@ npm run dev
 
 Open `http://localhost:3000` in your browser.
 
+6.Upload the project to the cloud:
+
 The project has been uploaded to the Vercel cloud,direct access https://vercel.com/wzh000624s-projects/gamehub-forum You can enter the project now.
 
 ## Supabase Setup Notes
