@@ -170,7 +170,7 @@ export function ForumShell({
     setLoadingComments((prev) => ({ ...prev, [postId]: true }));
     const { data, error } = await supabase
       .from("comments")
-      .select("id, post_id, user_id, parent_id, content, created_at, users(username, email, avatar_url)")
+      .select("id, post_id, user_id, parent_id, content, created_at, users!comments_user_id_fkey(username, email, avatar_url)")
       .eq("post_id", postId)
       .order("created_at", { ascending: true });
 
@@ -204,7 +204,7 @@ export function ForumShell({
         content: text.trim(),
         parent_id: null
       })
-      .select("id, post_id, user_id, parent_id, content, created_at, users(username, email, avatar_url)")
+      .select("id, post_id, user_id, parent_id, content, created_at, users!comments_user_id_fkey(username, email, avatar_url)")
       .single();
 
     setSubmittingComments((prev) => ({ ...prev, [postId]: false }));
@@ -232,7 +232,7 @@ export function ForumShell({
         content: text.trim(),
         parent_id: parentId
       })
-      .select("id, post_id, user_id, parent_id, content, created_at, users(username, email, avatar_url)")
+      .select("id, post_id, user_id, parent_id, content, created_at, users!comments_user_id_fkey(username, email, avatar_url)")
       .single();
 
     setSubmittingComments((prev) => ({ ...prev, [parentId]: false }));

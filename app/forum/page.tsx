@@ -17,20 +17,22 @@ export default async function ForumPage() {
     redirect("/login");
   }
 
-  const [{ data: profile }, { data: posts }, gameDeals] = await Promise.all([
+  const [{ data: profile }, gameDeals] = await Promise.all([
     supabase
       .from("users")
       .select("id, username, email, created_at, avatar_url")
       .eq("id", session.user.id)
       .single(),
-    supabase
-      .from("posts")
-      .select("id, user_id, title, content, created_at, likes_count, users(username, email, avatar_url), comments(id), likes(user_id)")
-      .order("created_at", { ascending: false }),
     getLiveGameDeals()
   ]);
 
-  const normalizedPosts = ((posts ?? []) as Array<
+  // Use explicit FK hints to avoid PGRST201 ambiguous relationship error
+  const { data: postsData } = await supabase
+    .from("posts")
+    .select("id, user_id, title, content, created_at, likes_count, users!posts_user_id_fkey(username, email, avatar_url), comments!post_id(id), likes!post_id(user_id)")
+    .order("created_at", { ascending: false });
+
+  const normalizedPosts = ((postsData ?? []) as Array<
     Omit<PostWithUser, "users"> & {
       users: PostWithUser["users"] | PostWithUser["users"][];
     }
