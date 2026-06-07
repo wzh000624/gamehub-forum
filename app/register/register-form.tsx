@@ -58,9 +58,7 @@ export function RegisterForm() {
     setLoading(false);
 
     if (error) {
-      setMessage(error.message.includes("already")
-        ? "This email is already registered."
-        : "Registration failed. Please try again later.");
+      setMessage(error.message);
       return;
     }
 
