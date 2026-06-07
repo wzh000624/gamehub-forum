@@ -44,6 +44,19 @@ export function RegisterForm() {
     setLoading(true);
     setMessage("");
 
+    // Pre-check if username is already taken
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("id")
+      .eq("username", username.trim())
+      .maybeSingle();
+
+    if (existingUser) {
+      setMessage("Username is already taken.");
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
