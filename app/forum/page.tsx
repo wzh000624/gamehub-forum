@@ -25,7 +25,7 @@ export default async function ForumPage() {
       .single(),
     supabase
       .from("posts")
-      .select("id, user_id, title, content, created_at, likes_count, users(username, email)")
+      .select("id, user_id, title, content, created_at, likes_count, users(username, email), comments(id)")
       .order("created_at", { ascending: false }),
     getLiveGameDeals()
   ]);

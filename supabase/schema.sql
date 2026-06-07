@@ -77,3 +77,33 @@ create policy "Users can delete own posts"
 
 create index if not exists posts_created_at_idx on public.posts(created_at desc);
 create index if not exists posts_user_id_idx on public.posts(user_id);
+
+create table if not exists public.comments (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references public.posts(id) on delete cascade,
+  user_id uuid not null references public.users(id) on delete cascade,
+  parent_id uuid references public.comments(id) on delete cascade,
+  content text not null check (char_length(content) <= 500),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists comments_post_id_idx on public.comments(post_id);
+create index if not exists comments_parent_id_idx on public.comments(parent_id);
+
+alter table public.comments enable row level security;
+
+drop policy if exists "Anyone can read comments" on public.comments;
+create policy "Anyone can read comments"
+  on public.comments for select
+  using (true);
+
+drop policy if exists "Authenticated users can create comments" on public.comments;
+create policy "Authenticated users can create comments"
+  on public.comments for insert
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Users can delete own comments" on public.comments;
+create policy "Users can delete own comments"
+  on public.comments for delete
+  using (auth.uid() = user_id);
+

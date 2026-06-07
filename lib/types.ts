@@ -16,7 +16,22 @@ export type PostWithUser = {
     username: string;
     email: string;
   } | null;
+  comments?: { id: string }[];
 };
+
+export type CommentWithUser = {
+  id: string;
+  post_id: string;
+  user_id: string;
+  parent_id: string | null;
+  content: string;
+  created_at: string;
+  users: {
+    username: string;
+    email: string;
+  } | null;
+};
+
 
 export type GameDeal = {
   dealID: string;
