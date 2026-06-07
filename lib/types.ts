@@ -3,6 +3,7 @@ export type Profile = {
   username: string;
   email: string;
   created_at: string;
+  avatar_url?: string;
 };
 
 export type PostWithUser = {
@@ -15,8 +16,10 @@ export type PostWithUser = {
   users: {
     username: string;
     email: string;
+    avatar_url?: string;
   } | null;
   comments?: { id: string }[];
+  likes?: { user_id: string }[];
 };
 
 export type CommentWithUser = {
@@ -29,6 +32,7 @@ export type CommentWithUser = {
   users: {
     username: string;
     email: string;
+    avatar_url?: string;
   } | null;
 };
 

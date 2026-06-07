@@ -107,3 +107,58 @@ create policy "Users can delete own comments"
   on public.comments for delete
   using (auth.uid() = user_id);
 
+-- Add avatar_url column to users profile
+alter table public.users add column if not exists avatar_url text;
+
+-- Create likes join table
+create table if not exists public.likes (
+  post_id uuid references public.posts(id) on delete cascade,
+  user_id uuid references public.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (post_id, user_id)
+);
+
+create index if not exists likes_post_id_idx on public.likes(post_id);
+create index if not exists likes_user_id_idx on public.likes(user_id);
+
+-- Enable RLS for likes
+alter table public.likes enable row level security;
+
+-- Policies for likes
+drop policy if exists "Anyone can read likes" on public.likes;
+create policy "Anyone can read likes" on public.likes for select using (true);
+
+drop policy if exists "Authenticated users can toggle likes" on public.likes;
+create policy "Authenticated users can toggle likes" on public.likes for insert with check (auth.uid() = user_id);
+
+drop policy if exists "Users can delete own likes" on public.likes;
+create policy "Users can delete own likes" on public.likes for delete using (auth.uid() = user_id);
+
+-- Trigger to auto increment/decrement likes_count on posts table
+create or replace function public.handle_post_like_change()
+returns trigger
+language plpgsql
+security definer
+as $$
+begin
+  if (TG_OP = 'INSERT') then
+    update public.posts
+    set likes_count = likes_count + 1
+    where id = new.post_id;
+    return new;
+  elsif (TG_OP = 'DELETE') then
+    update public.posts
+    set likes_count = greatest(0, likes_count - 1)
+    where id = old.post_id;
+    return old;
+  end if;
+  return null;
+end;
+$$;
+
+drop trigger if exists on_post_like_change on public.likes;
+create trigger on_post_like_change
+  after insert or delete on public.likes
+  for each row execute procedure public.handle_post_like_change();
+
+
