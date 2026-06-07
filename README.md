@@ -64,6 +64,8 @@ npm run dev
 
 Open `http://localhost:3000` in your browser.
 
+The project has been uploaded to the Vercel cloud,direct access https://vercel.com/wzh000624s-projects/gamehub-forum You can enter the project now.
+
 ## Supabase Setup Notes
 
 - Set the Authentication Site URL to local `http://localhost:3000` or your deployed domain.
