@@ -1,6 +1,6 @@
 # GameHub Game Forum Login and Message Board
 
-This is a Next.js MVP project based on the PRD. It includes registration, login, a forum message board, post creation, post listing, and sign out.
+This project is mainly aimed at college game enthusiasts, aiming to build a lightweight campus game exchange platform. Users can complete registration and login, browse forum content, post comments, and participate in interactive discussions, thus forming a convenient gaming community environment.
 
 ## Tech Stack
 
@@ -87,6 +87,9 @@ The project has been uploaded to the Vercel cloud,direct access https://vercel.c
 - Reserved likes field
 - User sign out
 - Live game deal cards powered by the CheapShark public API
+- User avatar upload
+- Users can delete their own posts by themselves
+- Hot Like Post Ranking
 
 ## External API Integration
 
@@ -98,10 +101,4 @@ https://www.cheapshark.com/api/1.0/deals
 
 Deal cards link through CheapShark redirect URLs, matching CheapShark usage guidance for deal traffic.
 
-## Future V2 Ideas
 
-- Like button
-- Comment replies
-- User avatar upload
-- Game tag categories
-- User center and post history management
