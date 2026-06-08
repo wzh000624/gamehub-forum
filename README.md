@@ -10,7 +10,7 @@ This project is mainly aimed at college game enthusiasts, aiming to build a ligh
 - CheapShark public API
 - Tailwind CSS
 - lucide-react icons
-
+- Codex chargpt
 ## Project Structure
 
 ```text
